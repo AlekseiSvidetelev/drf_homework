@@ -12,6 +12,8 @@ python-dotenv = "^1.1.1"
 djangorestframework = "^3.16.0"
 psycopg2-binary = "^2.9.10"
 pillow = "^11.3.0"
+django-filter = "^25.1"
+isort = "^6.0.1"
 
 
 [tool.poetry.group.lint.dependencies]
