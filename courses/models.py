@@ -7,11 +7,7 @@ class Course(models.Model):
     preview_image = models.ImageField(upload_to="course_images/", verbose_name="Картинка курса", blank=True, null=True)
     description = models.TextField(verbose_name="Описание курса", help_text="Введите описание курса")
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Владелец курса"
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Владелец курса"
     )
 
     class Meta:
@@ -28,11 +24,7 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name="Курс")
 
     owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Владелец урока"
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Владелец урока"
     )
 
     class Meta:

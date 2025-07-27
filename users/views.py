@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import Payment, User
-from users.serializers import PaymentSerializer, UserSerializer, UserCreateSerializer
+from users.serializers import PaymentSerializer, UserCreateSerializer, UserSerializer
 
 
 class UserViewSet(ModelViewSet):
@@ -13,17 +13,19 @@ class UserViewSet(ModelViewSet):
     serializer_class = UserSerializer
     ordering = ["id"]
 
+
 class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
     ordering = ["id"]
-    permission_classes = [AllowAny,]
+    permission_classes = [
+        AllowAny,
+    ]
 
     def perform_create(self, serializer):
         user = serializer.save(is_active=True)
         user.set_password(user.password)
         user.save()
-
 
 
 class PaymentViewSet(ModelViewSet):
