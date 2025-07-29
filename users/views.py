@@ -1,22 +1,23 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import Payment, User
-from users.permissions import IsOwner
-from users.serializers import PaymentSerializer, UserSerializer, PublicUserSerializer
+from users.permissions import IsOwnerOrAdmin
+from users.serializers import PaymentSerializer, PublicUserSerializer, UserSerializer
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = PublicUserSerializer
+    ordering = ["id"]
 
     def get_serializer_class(self):
-        if self.action == 'retrieve':
-            requested_user_id = self.kwargs.get('pk')
+        if self.action == "retrieve":
+            requested_user_id = self.kwargs.get("pk")
             current_user_id = self.request.user.id
-            if str(current_user_id) == requested_user_id:
+            if str(current_user_id) == str(requested_user_id):
                 return UserSerializer
         return PublicUserSerializer
 
@@ -27,15 +28,25 @@ class UserViewSet(ModelViewSet):
 
     def get_permissions(self):
         if self.action == "list":
-            self.permission_classes = [IsAuthenticated,]
+            self.permission_classes = [
+                IsAuthenticated,
+            ]
         elif self.action == "create":
-            self.permission_classes = [AllowAny,]
+            self.permission_classes = [
+                AllowAny,
+            ]
         elif self.action == "retrieve":
-            self.permission_classes = [IsAuthenticated,]
-        elif self.action == "update":
-            self.permission_classes = [IsOwner, ]
+            self.permission_classes = [
+                IsAuthenticated,
+            ]
+        elif self.action == "update" or self.action == "partial_update":
+            self.permission_classes = [
+                IsOwnerOrAdmin,
+            ]
         elif self.action == "destroy":
-            self.permission_classes = (IsAdminUser | IsOwner,)
+            self.permission_classes = [
+                IsOwnerOrAdmin,
+            ]
         return super().get_permissions()
 
 
