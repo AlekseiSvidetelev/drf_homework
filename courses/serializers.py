@@ -1,16 +1,31 @@
-from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.fields import SerializerMethodField, URLField
+from rest_framework.serializers import ModelSerializer, CharField
 
 from courses.models import Course, Lesson
+from courses.validators import url_validator
+from users.models import Subscription
 
 
 class CourseSerializer(ModelSerializer):
+    is_subscribed = SerializerMethodField()
+
+    def get_is_subscribed(self, course):
+        """Проверка на подписку пользователя на курс"""
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return Subscription.objects.filter(user=request.user, course=course).exists()
+        return False
+
     class Meta:
         model = Course
         fields = "__all__"
 
 
 class LessonSerializer(ModelSerializer):
+    video_url = URLField(
+        validators=[url_validator],
+    )
+
     class Meta:
         model = Lesson
         fields = "__all__"

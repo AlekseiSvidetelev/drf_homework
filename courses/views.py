@@ -3,12 +3,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from courses.models import Course, Lesson
+from courses.paginators import CustomPageNumberPagination
 from courses.serializers import CourseDetailSerializer, CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
 
 
 class CourseViewSet(ModelViewSet):
     queryset = Course.objects.all()
+    pagination_class = CustomPageNumberPagination
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -29,6 +31,8 @@ class CourseViewSet(ModelViewSet):
             ]
         elif self.action == "destroy":
             self.permission_classes = (~IsModerator | IsOwner,)
+        elif self.action == "list":
+            self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
 
 
@@ -46,6 +50,7 @@ class LessonCreateView(CreateAPIView):
 class LessonListView(ListAPIView):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
+    pagination_class = CustomPageNumberPagination
 
 
 class LessonRetrieveView(RetrieveAPIView):
@@ -55,6 +60,10 @@ class LessonRetrieveView(RetrieveAPIView):
         IsAuthenticated,
         IsModerator | IsOwner,
     )
+
+    def get_serializer_context(self):
+        """Добавляем текущий запрос в контекст сериализатора."""
+        return {"request": self.request}
 
 
 class LessonUpdateView(UpdateAPIView):
