@@ -1,9 +1,15 @@
+from django.template.context_processors import request
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from users.models import Payment, User
+from courses.models import Course
+from courses.paginators import CustomPageNumberPagination
+from users.models import Payment, User, Subscription
 from users.permissions import IsOwnerOrAdmin
 from users.serializers import PaymentSerializer, PublicUserSerializer, UserSerializer
 
@@ -12,6 +18,7 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = PublicUserSerializer
     ordering = ["id"]
+    pagination_class = CustomPageNumberPagination
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -19,6 +26,8 @@ class UserViewSet(ModelViewSet):
             current_user_id = self.request.user.id
             if str(current_user_id) == str(requested_user_id):
                 return UserSerializer
+        elif self.action == "create":
+            return UserSerializer
         return PublicUserSerializer
 
     def perform_create(self, serializer):
@@ -67,3 +76,20 @@ class PaymentViewSet(ModelViewSet):
         lesson = serializer.save()
         lesson.owner = self.request.user
         lesson.save()
+
+
+class SubscriptionAPIView(APIView):
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        course_id = self.request.data.get("course")
+        course_item = get_object_or_404(Course, id=course_id)
+
+        subs_item = Subscription.objects.filter(user=user, course=course_item)
+
+        if subs_item.exists():
+            subs_item.delete()
+            message = "подписка удалена"
+        else:
+            Subscription.objects.create(user=user, course=course_item)
+            message = "подписка добавлена"
+        return Response({"message": message})
