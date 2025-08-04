@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from rest_framework.generics import CreateAPIView
 
 from courses.models import Course, Lesson
 
@@ -52,6 +53,7 @@ class Payment(models.Model):
     PAYMENT_METHODS = [
         ("cash", "Наличные"),
         ("transfer", "Перевод на счёт"),
+        ("stripe", "Stripe"),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", help_text="Пользователь")
@@ -61,12 +63,16 @@ class Payment(models.Model):
         on_delete=models.PROTECT,
         verbose_name="Оплаченный курс",
         help_text="Оплаченный курс",
+        blank=True,
+        null=True,
     )
     paid_lesson = models.ForeignKey(
         Lesson,
         on_delete=models.PROTECT,
         verbose_name="Оплаченный урок",
         help_text="Оплаченный урок",
+        blank=True,
+        null=True,
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма", help_text="Сумма")
     method = models.CharField(
@@ -77,6 +83,19 @@ class Payment(models.Model):
         verbose_name = "Платеж"
         verbose_name_plural = "Платежи"
         ordering = ["-payment_date"]
+
+
+class PaymentStripe(models.Model):
+    """Оплата Stripe"""
+
+    payment = models.OneToOneField(Payment, on_delete=models.CASCADE, related_name="stripe")
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    stripe_session_url = models.URLField(max_length=500, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Stripe-платёж"
+        verbose_name_plural = "Stripe-платежи"
 
 
 class Subscription(models.Model):
