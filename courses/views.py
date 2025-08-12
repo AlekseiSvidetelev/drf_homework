@@ -7,6 +7,7 @@ from rest_framework.viewsets import ModelViewSet
 from courses.models import Course, Lesson
 from courses.paginators import CustomPageNumberPagination
 from courses.serializers import CourseDetailSerializer, CourseSerializer, LessonSerializer
+from courses.tasks import send_course_update_information
 from users.permissions import IsModerator, IsOwner
 
 
@@ -57,6 +58,10 @@ class CourseViewSet(ModelViewSet):
         elif self.action == "list":
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
+
+    def perform_update(self, serializer):
+        super().perform_update(serializer)
+        send_course_update_information.delay(self.get_object().id)
 
 
 @method_decorator(

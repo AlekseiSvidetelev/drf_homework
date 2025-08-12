@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django_filters",
     "users",
     "courses",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -161,10 +162,21 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 # set the celery broker url
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 # set the celery result backend
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "deactivated-user-status": {
+        "task": "users.tasks.deactivated_user_status",
+        "schedule": timedelta(seconds=10),
+    },
+}
+
 
 # Настройка почтового сервера
 EMAIL_HOST = "smtp.yandex.ru"
