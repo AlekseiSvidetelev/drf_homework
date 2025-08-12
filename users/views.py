@@ -191,7 +191,6 @@ class SubscriptionAPIView(APIView):
         return Response({"message": message})
 
 
-
 class PaymentStripeCreateAPIView(CreateAPIView):
     queryset = Payment.objects.all()
     serializer_class = PaymentStripeCreateSerializer

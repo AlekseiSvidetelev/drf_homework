@@ -2,7 +2,7 @@ import os
 
 import stripe
 from forex_python.converter import CurrencyRates
-from stripe import Product, Price
+from stripe import Price, Product
 
 from users.models import Payment
 
