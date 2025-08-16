@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from rest_framework.generics import CreateAPIView
@@ -100,10 +101,13 @@ class PaymentStripe(models.Model):
 
 class Subscription(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь", help_text="Пользователь")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="Пользователь", help_text="Пользователь"
+    )
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, verbose_name="Курс", help_text="Курс", blank=True, null=True
     )
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата подписки", help_text="Дата подписки")
 
     class Meta:
