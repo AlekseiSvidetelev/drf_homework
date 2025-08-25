@@ -23,6 +23,8 @@ celery = "^5.5.3"
 eventlet = "^0.40.2"
 redis = "^6.4.0"
 django-celery-beat = "^2.8.1"
+forex-python = "^1.9.2"
+
 
 
 

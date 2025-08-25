@@ -177,7 +177,6 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-
 # Настройка почтового сервера
 EMAIL_HOST = "smtp.yandex.ru"
 EMAIL_PORT = 465
