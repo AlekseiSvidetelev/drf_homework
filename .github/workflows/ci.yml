@@ -44,6 +44,10 @@ jobs:
         run: poetry install --no-root
 
       - name: Run Tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DATABASE_URL: postgresql://test_user:test_password@postgres:5432/test_db
+          REDIS_URL: redis://redis:6379/0
         run: poetry run python manage.py test
 
   build:
