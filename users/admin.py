@@ -12,7 +12,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Payment)
-class UserAdmin(admin.ModelAdmin):
+class PaymentAdmin(admin.ModelAdmin):
     list_display = (
         "user",
         "payment_date",

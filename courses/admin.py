@@ -4,7 +4,7 @@ from courses.models import Course, Lesson
 
 
 @admin.register(Course)
-class UserAdmin(admin.ModelAdmin):
+class CourseAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "preview_image",
@@ -14,7 +14,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 @admin.register(Lesson)
-class UserAdmin(admin.ModelAdmin):
+class LessonAdmin(admin.ModelAdmin):
     list_display = (
         "title",
         "preview_image",
