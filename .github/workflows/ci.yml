@@ -118,8 +118,11 @@ jobs:
 #            poetry run python manage.py collectstatic --noinput
 #          EOF
 
-      - name: Restart application
+      - name: Deploy / restart
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            sudo systemctl restart myapp.service
+            cd /var/www/drf_homework
+            git pull origin feature/homework_35_2
+            docker-compose down
+            docker-compose up -d --build
           EOF
