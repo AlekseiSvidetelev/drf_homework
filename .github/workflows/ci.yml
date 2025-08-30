@@ -82,26 +82,28 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Check and create deployment directory
+      - name: Check and create deployment directory with correct permissions
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            # Проверяем существование директории
             if [ ! -d "${{ secrets.DEPLOY_DIR }}" ]; then
               echo "Directory does not exist, creating..."
               sudo mkdir -p ${{ secrets.DEPLOY_DIR }}
             fi
 
+            # Устанавливаем правильного владельца
             echo "Setting correct ownership..."
             sudo chown ${{ secrets.SSH_USER }}:${{ secrets.SSH_USER }} ${{ secrets.DEPLOY_DIR }}
 
-
+            # Устанавливаем правильные права
             echo "Setting correct permissions..."
             sudo chmod 755 ${{ secrets.DEPLOY_DIR }}
 
-
+            # Проверяем права доступа
             echo "Checking access rights..."
             ls -ld ${{ secrets.DEPLOY_DIR }}
 
-
+            # Проверяем, может ли пользователь писать в директорию
             if touch ${{ secrets.DEPLOY_DIR }}/test_write 2>/dev/null; then
               echo "Write access: OK"
               rm ${{ secrets.DEPLOY_DIR }}/test_write
