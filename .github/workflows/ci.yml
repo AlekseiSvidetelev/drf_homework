@@ -98,7 +98,7 @@ jobs:
             fi
 
             poetry env use python3
-            poetry install --no-dev
+            poetry install --only main
           EOF
 
       - name: Apply migrations on server
