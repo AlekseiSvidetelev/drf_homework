@@ -83,7 +83,8 @@ jobs:
             -e "ssh -o StrictHostKeyChecking=no" \
             --exclude '__pycache__' \
             --exclude '.venv' \
-            . ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}
+            --exclude '.git' \
+            ./  ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:${{ secrets.DEPLOY_DIR }}/
 
       - name: Install dependencies on server
         run: |
