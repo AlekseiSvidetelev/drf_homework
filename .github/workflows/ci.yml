@@ -114,6 +114,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             set -e
             cd ${{ secrets.DEPLOY_DIR }}
+            export DJANGO_SETTINGS_MODULE=config.settings
             poetry run python manage.py collectstatic --noinput
           EOF
 
