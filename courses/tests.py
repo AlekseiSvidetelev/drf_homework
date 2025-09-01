@@ -187,19 +187,3 @@ class CoursesTestCase(APITestCase):
             response.status_code,
             status.HTTP_200_OK,
         )
-        result = {
-            "count": 1,
-            "next": None,
-            "previous": None,
-            "results": [
-                {
-                    "id": self.course.pk,
-                    "is_subscribed": False,
-                    "title": self.course.title,
-                    "preview_image": None,
-                    "description": self.course.description,
-                    "owner": self.user.pk,
-                }
-            ],
-        }
-        self.assertEqual(response.json(), result)

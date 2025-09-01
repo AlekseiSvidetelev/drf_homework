@@ -15,7 +15,6 @@ from users.models import Payment, PaymentStripe, Subscription, User
 from users.permissions import IsOwnerOrAdmin
 from users.serializers import PaymentSerializer, PaymentStripeCreateSerializer, PublicUserSerializer, UserSerializer
 from users.services import (
-    convert_rub_to_usd,
     create_stripe_product,
     create_stripe_product_price,
     create_stripe_session,

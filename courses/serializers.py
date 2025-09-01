@@ -1,5 +1,5 @@
 from rest_framework.fields import SerializerMethodField, URLField
-from rest_framework.serializers import CharField, ModelSerializer
+from rest_framework.serializers import ModelSerializer
 
 from courses.models import Course, Lesson
 from courses.validators import url_validator

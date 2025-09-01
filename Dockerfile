@@ -16,3 +16,6 @@ RUN mkdir -p /app/media
 COPY . .
 
 EXPOSE 8000
+
+
+CMD ["sh", "-c", "python manage.py collectstatic --noinput && g"]
